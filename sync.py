@@ -13,6 +13,16 @@ def sync():
     db = sqlite3.connect('journal.sqlite')
     cursor = db.cursor()
 
+    cursor.execute("SELECT name FROM sqlite_master WHERE name='turbine_data'")
+    if cursor.fetchone() is None:
+        cursor.execute("""
+            CREATE TABLE turbine_data (
+                timestamp TEXT NOT NULL,
+                production INTEGER NOT NULL,
+                consumption INTEGER NOT NULL
+            )""")
+        print "Created db table"
+
     cursor.execute('SELECT timestamp FROM turbine_data ORDER BY timestamp DESC LIMIT 1')
     latest_row = cursor.fetchone()
     
